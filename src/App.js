@@ -1,25 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import React, {useState} from "react";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+let Request = () => {
+    let [data, setData] = useState(-1);
+    let reqLink = React.createRef();
 
-export default App;
+    let GetData = (link) => {
+        return fetch(link).then(response => {
+            return response;
+        })
+    };
+
+    let doRequest = () => {
+        GetData(reqLink.current.value).then(responseData => {
+            setData(responseData.status);
+        })
+    };
+
+    return (
+        <div className="background">
+            <div className="RequestContainer">
+                <div className="row"><label className="RequestLabel">Status: {data}</label></div>
+                <div className="row"><input type="text" ref={reqLink} placeholder="Address"/></div>
+                <div className="row"><button className="RequestButton" onClick={doRequest}>GO</button></div>
+            </div>
+        </div>
+    );
+};
+
+export default Request;
