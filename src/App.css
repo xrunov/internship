@@ -1,3 +1,16 @@
+*, *::after, *::before {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+html {
+  font-size: 62.5%;
+}
+
 .background {
   height: 100vh;
   width: 100vw;
@@ -6,10 +19,34 @@
   align-items: center;
 }
 
-.RequestContainer {
+.CalcContainer {
+  background-color: whitesmoke;
+  padding: 5% 5%;
   border-radius: 5px;
-  height: 20vh;
-  width: 60vw;
+  height: 80vh;
+  width: 80vw;
+}
+
+.Container {
+  width: 100%;
+  margin-top: 1vh;
+  margin-bottom: 1vh;
+}
+
+.inputP {
+  cursor: default;
+  width: 100%;
+  margin-bottom: 1vh;
+  font-size: 1.8rem;
+  font-weight:bold
+}
+
+.inputData {
+  cursor: text;
+  font-size: 1.8rem;
+  border: lightgray solid 2px;
+  width: 100%;
+  border-radius: 1vh;
 }
 
 .row{
@@ -18,30 +55,24 @@
   width: 100%;
 }
 
-.RequestButton {
-  color: darkred;
-  font-size: 8vh;
-  background-color: red;
-  border-radius: 5vh;
-  border: darkred solid 2px;
-  height: 10vh;
-  margin: 1px;
+.Calculate {
+  color: white;
+  font-size: 1.8rem;
+  background-color: royalblue;
+  border-radius: 1vh;
+  border: darkslateblue solid 2px;
+  height: 5vh;
+  cursor: pointer;
 }
 
-.RequestLabel {
-  text-align: center;
-  width: 60vw;
-  font-size: 8vh;
-  margin: 1px;  background-color: whitesmoke;
-  border-radius: 2px;
-  border: black solid 2px;
+.labelHeader {
+  text-align: center ;
+  width: 100%;
+  font-size: 2.5rem;
 }
-input {
-  text-align: center;
-  font-size: 5vh;
-  height: 6vh;
-  width: 60vw;
-  border: none;
-  border-bottom: darkred solid 2px;
-  margin: 1px;
+
+.tableResult {
+  height: 20%;
+  width: 100%;
 }
+
