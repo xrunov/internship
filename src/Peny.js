@@ -2,49 +2,92 @@ import './App.css';
 import React, {useState} from "react";
 import InputFieldDate from "./components/InputFieldDate";
 import InputFieldMoney from "./components/InputFieldMoney";
+import moment from "moment";
+import ResultTable from "./components/ResultTable";
 
-let arrears, since, until, rate = 1/3, dayCount, penalty;
 
 let PenyCalculator = () => {
-    let [data, setData] = useState(-1);
-    let reqLink = React.createRef();
 
-    let GetData = (link) => {
-        return fetch(link).then(response => {
-            return response;
-        })
-    };
+  const [inputData, setData] = useState({
+    arrears: 0,
+    dateSince: "",
+    dateUntil: "",
+    rate: 0.042,
+    dayCount: 0,
+    penalty: 0,
+  });
+//запрос на получение коофициэнта еще предстоит реализовать
+  //https://shielded-oasis-30862.herokuapp.com/api/cbr/
 
-    let doRequest = () => {
-        GetData(reqLink.current.value).then(responseData => {
-            setData(responseData.status);
-        })
-    };
-
-    return (
-        <div className="background">
-            <div className="CalcContainer">
-                <div className="row"><label className="labelHeader">Калькулятор пени по 44 фз – онлайн расчет неустойки</label></div>
-                <div className="row"><InputFieldMoney text="Цена неисполненных обязательств" required="required"/></div>
-                <div className="row"><InputFieldDate inputType={"date"} text="Срок окончания поставки товара, выполнения работ оказания услуг" required="required"/></div>
-                <div className="row"><InputFieldDate inputType={"date"} text="Окончание периода просрочки " required="required"/></div>
-                <div className="Container"><button className="Calculate" onClick={doRequest}>Рассчитать</button></div>
-
-                <table className="tableResult" border="1px" cellSpacing="0">
-                    <tr align="center" rowSpan="1"><td rowSpan="2">Задолжность</td><td colSpan="3">Период просрочки</td><td rowSpan="2" >Ставка</td><td rowSpan="2">Неустойка</td></tr>
-                    <tr align="center"><td>с</td><td>до</td><td>после</td></tr>
-                    <tr align="center">
-                        <td>{arrears}</td>
-                        <td>{since}</td>
-                        <td>{until}</td>
-                        <td>{dayCount}</td>
-                        <td>{rate}</td>
-                        <td>{penalty}</td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-    );
+  let handleArrearsChange = (arrears) => {
+    inputData.arrears = arrears;
+  };
+  let handleDateSinceChange = (Date) => {
+    inputData.dateSince = Date;
+  };
+  let handleDateUntilChange = (Date) => {
+    inputData.dateUntil = Date;
+  };
+//рассчет длительности периода просрочки
+  let penaltyDuration = () => {
+    let diff = moment(inputData.dateUntil, "YYYY-MM-DD").diff(moment(inputData.dateSince, "YYYY-MM-DD"));
+    let duration = moment.duration(diff);
+    return duration.asDays();
+  };
+//вычисление пени
+  let countPeny = () => {
+    inputData.dayCount = penaltyDuration();
+    inputData.penalty = inputData.arrears * inputData.dayCount * inputData.rate;
+//обновление значений в таблице
+    setData({
+      ...inputData
+    });
+  };
+// разметка компонента калькулятора
+  return (
+    <div className="background">
+      <div className="CalcContainer">
+        <form>
+          <div className="row">
+            <label className="labelHeader">
+              Калькулятор пени по 44 фз – онлайн расчет неустойки
+            </label>
+          </div>
+          <div className="row">
+            <InputFieldMoney
+              onArrearsReset={handleArrearsChange}
+              text="Цена неисполненных обязательств"
+            />
+          </div>
+          <div className="row">
+            <InputFieldDate
+              onDateReset={handleDateSinceChange}
+              text="Срок окончания поставки товара, выполнения работ оказания услуг"
+            />
+          </div>
+          <div className="row">
+            <InputFieldDate
+              onDateReset={handleDateUntilChange}
+              text="Окончание периода просрочки "
+            />
+          </div>
+          <div className="Container">
+            <button className="Calculate"
+              type="button"
+              onClick={countPeny}>
+              Рассчитать
+            </button>
+          </div>
+        </form>
+        <ResultTable
+          cost={inputData.arrears}
+          days={inputData.dayCount}
+          rate={inputData.rate}
+          peny={inputData.penalty}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default PenyCalculator;

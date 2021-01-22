@@ -1,14 +1,34 @@
 import '../App.css';
-import React from 'react';
+import React, {Component} from 'react';
 
-let InputFieldMoney = (props) => {
+export default class InputFieldMoney extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {arrearsCount: ""};
+  }
 
-    return (
-        <div className="Container">
-            <div className="inputP">{props.text}</div>
-            <input className="inputData" placeholder="0.00" type="number" min="0" step="0.01"/>
-        </div>
-    );
-};
+  handleArrearsChange = (e) => {
+    this.setState({
+      arrearsCount: e.target.value
+    });
+    this.props.onArrearsReset(e.target.value);
+  }
 
-export default InputFieldMoney;
+  render() {
+    const {arrearsCount} = this.state
+    return <div className="Container">
+      <div className="inputP">{this.props.text}</div>
+      <input
+        className="inputData"
+        placeholder="0.00 руб"
+        type="number"
+        step="0.01"
+        min="0.00"
+        required="required"
+        value={arrearsCount}
+        onChange={this.handleArrearsChange}
+      />
+    </div>;
+
+  }
+}
