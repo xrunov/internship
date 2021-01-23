@@ -14,10 +14,10 @@ export default class ResultTable extends Component{
           <td>Неустойка</td>
         </tr>
         <tr align="center">
-          <td>{this.props.cost}</td>
-          <td>{this.props.days}</td>
-          <td>{this.props.rate}</td>
-          <td>{this.props.peny}</td>
+          <td>{this.props.cost} руб</td>
+          <td>{this.props.days} дней</td>
+          <td>{this.props.rate * 100} %</td>
+          <td>{this.props.peny} руб</td>
         </tr>
         </tbody>
       </table>
