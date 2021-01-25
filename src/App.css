@@ -24,7 +24,7 @@ html {
   padding: 5% 5%;
   border-radius: 5px;
   height: 80vh;
-  width: 80vw;
+  width: 60vw;
 }
 
 .Container {
@@ -76,5 +76,11 @@ html {
   width: 100%;
   border: 2px solid lightgray;
   border-collapse: collapse;
+}
+
+.eBox {
+  color: red;
+  height: 6%;
+  margin-bottom: 2px;
 }
 
