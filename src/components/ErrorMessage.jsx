@@ -7,7 +7,7 @@ export default class ErrorMessage extends Component {
     if (this.props.eCode) {
       return (
         <p className="eBox">
-          Ошибка! {this.props.eMessage} код ошибки: {this.props.eCode}
+          Ошибка! {this.props.eMessage}, код ошибки: {this.props.eCode}
         </p>
       );
     } else {
