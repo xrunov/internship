@@ -19,7 +19,7 @@ export default class InputFieldDate extends Component {
   render() {
     const {Date} = this.state
     return (
-        <div className="inputData">
+        <div className="inputDate">
           <input
             type="date"
             className="form-control"

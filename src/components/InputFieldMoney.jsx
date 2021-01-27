@@ -18,7 +18,9 @@ export default class InputFieldMoney extends Component {
   render() {
     const {arrearsCount} = this.state
     return <div className="r">
-      <div className="inputP">{this.props.text}</div>
+      <div className="r">
+        <div className="inputP">{this.props.text}</div>
+      </div>
       <input
         className="form-control"
         placeholder="0.00 руб"

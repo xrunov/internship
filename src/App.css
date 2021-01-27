@@ -29,15 +29,23 @@ html {
 .r {
   margin: 8px 0;
 }
+
 .inputP {
   cursor: default;
   width: 100%;
-  margin-bottom: 1vh;
   font-size: 1.8rem;
-  font-weight: bold
+  font-weight: bold;
+  display :flex;
 }
 
-.inputData {
+.inputRate {
+  cursor: text;
+  border: lightgray;
+  width: 100%;
+  border-radius: 1vh;
+}
+
+.inputDate {
   cursor: text;
   border: lightgray;
   width: 48%;

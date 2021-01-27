@@ -1,20 +1,22 @@
 import './App.css';
+import 'react-bootstrap';
+
 import React, {useState} from "react";
 import moment from "moment";
 import PenyConfig from "./configurations/PenyConfig";
+
 import InputFieldDate from "./components/InputFieldDate";
 import InputFieldMoney from "./components/InputFieldMoney";
 import ResultTable from "./components/ResultTable";
 import ErrorMessage from "./components/ErrorMessage";
-import 'react-bootstrap';
+import KeyRate from "./components/keyRate";
 
 let PenyCalculator = () => {
-
   const [Data, setData] = useState({
     arrears: 0,
     dateSince: "",
     dateUntil: "",
-    rate: 0,
+    rate: 1,
     dayCount: 0,
     penalty: 0,
     errorCode: 0,
@@ -22,6 +24,7 @@ let PenyCalculator = () => {
     loading: false,
     buttonText: "Рассчитать",
     tExists: false,
+    checked: true,
   });
   Object.preventExtensions(Data);
 //функции отвечающие за обновление полей данных
@@ -34,15 +37,34 @@ let PenyCalculator = () => {
   let handleDateUntilChange = (Date) => {
     Data.dateUntil = Date;
   };
+  let handleRateChange = (Rate) => {
+    Data.rate = Rate;
+  };
 //рассчет длительности периода просрочки
   let penaltyDuration = () => {
     let diff = moment(Data.dateUntil, "YYYY-MM-DD").diff(moment(Data.dateSince, "YYYY-MM-DD"));
     let duration = moment.duration(diff);
     return duration.asDays();
   };
-//вычисление пени
-  let countPeny = async (e) => {
-    e.preventDefault()
+  //toggle функция
+  let toggleState = () => {
+    Data.checked = !Data.checked;
+    setData({...Data});
+  }
+  //вычисление пени без рапроса
+  let countSimple = () => {
+    Data.loading = true;
+    Data.buttonText = "Рассчитывается..."
+    setData({...Data});
+    Data.dayCount = penaltyDuration();
+    Data.penalty = Data.arrears * Data.dayCount * Data.rate * PenyConfig.refinanceRate;
+    Data.loading = false;
+    Data.buttonText = "Рассчитать"
+    Data.tExists = true;
+    setData({...Data});
+  }
+//вычисление пени с запросом
+  let countFetch = async () => {
     Data.loading = true;
     Data.buttonText = "Рассчитывается..."
     setData({...Data});
@@ -53,10 +75,9 @@ let PenyCalculator = () => {
       const res = await fetch(PenyConfig.reqLink + Data.dateUntil)
       if (res.ok) {
         const data = await res.json();
-        console.log(data.statusCode)
         Data.rate = data.value;
         //расчет пени
-        Data.penalty = Data.arrears * Data.dayCount * Data.rate * PenyConfig.refinanceRate
+        Data.penalty = Data.arrears * Data.dayCount * Data.rate * PenyConfig.refinanceRate;
         //обработчик ошибок
         if (data.statusCode !== 200) {
           Data.errorCode = data.statusCode;
@@ -76,6 +97,15 @@ let PenyCalculator = () => {
       setData({...Data});
     }
   }
+  let countPeny = (e) => {
+    e.preventDefault()
+    if (Data.checked) {
+      countFetch ();
+    }
+    else {
+      countSimple ()
+    }
+  }
 // разметка компонента калькулятора
   return (
     <div className="background">
@@ -90,8 +120,9 @@ let PenyCalculator = () => {
             onArrearsReset={handleArrearsChange}
             text="Цена неисполненных обязательств"
           />
-          <div className="r">
-            <div className="inputP">Срок окончания оказания услуг и окончание периода просрочки</div>
+          <div className="row">
+            <div className="inputP col">Срок окончания поставки товара, выполнения работ оказания услуг</div>
+            <div className="inputP col">Окончание периода просрочки </div>
           </div>
           <div className="r DataFields">
             <InputFieldDate
@@ -103,11 +134,28 @@ let PenyCalculator = () => {
             />
           </div>
           <div className="r">
+            <KeyRate
+              text = "Укажите ключевую ставку"
+              show = {Data.checked}
+              onRateReset={handleRateChange}
+            />
+          </div>
+          <div className="r d-flex">
             <button className="btn btn-primary"
                     type="submit"
                     disabled={Data.loading}>
               {Data.buttonText}
             </button>
+            <div className="divider"> </div>
+            <div className="form-check mt-1">
+              <input type="checkbox"
+                     className="form-check-input"
+                     id="exampleCheck1"
+                     checked={Data.checked}
+                     onChange = {toggleState}
+              />
+              <label className="form-check-label align-middle m-1">Получить ключевую ставку на дату</label>
+            </div>
           </div>
         </form>
         <div className="r">
