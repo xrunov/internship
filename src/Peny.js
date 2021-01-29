@@ -142,7 +142,7 @@ let PenyCalculator = () => {
             text="Цена неисполненных обязательств"
           />
           <div className="row">
-            <div className="inputP col">Срок окончания поставки товара, выполнения работ оказания услуг</div>
+            <div className="inputP col">Срок окончания поставки товара, выполнения работ, оказания услуг</div>
             <div className="inputP col">Окончание периода просрочки </div>
           </div>
           <div className="r DataFields">
