@@ -634,7 +634,7 @@ module.exports = function (webpackEnv) {
           // Options similar to the same options in webpackOptions.output
           // both options are optional
           filename: 'static/[contenthash:8].calc-app.css',
-          chunkFilename: 'static/[contenthash:8].calc-app.css.css',
+          chunkFilename: 'static/[contenthash:8].calc-app.css',
         }),
       // Generate an asset manifest file with the following content:
       // - "files" key: Mapping of all asset filenames to their corresponding
