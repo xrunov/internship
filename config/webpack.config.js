@@ -200,13 +200,13 @@ module.exports = function (webpackEnv) {
       // In development, it does not produce real files.
       filename: isEnvProduction
         //? 'static/js/[name].[contenthash:8].js'
-        ? 'static/[contenthash:8].calc-app.js'
-        : isEnvDevelopment && 'static/[contenthash:8].bundle.js',
+        ? 'static/[contenthash].bundle.js'
+        : isEnvDevelopment && 'static/[contenthash].bundle.js',
       // TODO: remove this when upgrading to webpack 5
       futureEmitAssets: true,
       // There are also additional JS chunk files if you use code splitting.
       chunkFilename: isEnvProduction
-        ? 'static/[contenthash:8].calc-app.js'
+        ? 'static/[contenthash:8].calc-app.chunk.js'
         : isEnvDevelopment && 'static/[contenthash:8].calc-app.chunk.js',
       // webpack uses `publicPath` to determine where the app is being served from.
       // It requires a trailing slash, or the file assets will get an incorrect path.
@@ -633,8 +633,8 @@ module.exports = function (webpackEnv) {
         new MiniCssExtractPlugin({
           // Options similar to the same options in webpackOptions.output
           // both options are optional
-          filename: 'static/[name].[contenthash:8].chunk.css',
-          chunkFilename: 'static/[name].[contenthash:8].chunk.css',
+          filename: 'static/[name].[contenthash:8].[name].chunk.css',
+          chunkFilename: 'static/[name].[contenthash:8].[name].css',
         }),
       // Generate an asset manifest file with the following content:
       // - "files" key: Mapping of all asset filenames to their corresponding
