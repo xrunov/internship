@@ -201,7 +201,7 @@ module.exports = function (webpackEnv) {
       filename: isEnvProduction
         //? 'static/js/[name].[contenthash:8].js'
         ? 'static/[contenthash:8].calc-app.js'
-        : isEnvDevelopment && 'static/[contenthash:8].calc-app.js\'',
+        : isEnvDevelopment && 'static/[contenthash:8].calc-app.js',
       // TODO: remove this when upgrading to webpack 5
       futureEmitAssets: true,
       // There are also additional JS chunk files if you use code splitting.
