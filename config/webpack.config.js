@@ -199,9 +199,8 @@ module.exports = function (webpackEnv) {
       // There will be one main bundle, and one file per asynchronous chunk.
       // In development, it does not produce real files.
       filename: isEnvProduction
-        //? 'static/js/[name].[contenthash:8].js'
-        ? 'static/[name].bundle.js'
-        : isEnvDevelopment && 'static/[name].bundle.js',
+        ? 'static/[id].[name].bundle.js'
+        : isEnvDevelopment && 'static/[id].[name].bundle.js',
       // TODO: remove this when upgrading to webpack 5
       futureEmitAssets: true,
       // There are also additional JS chunk files if you use code splitting.
@@ -633,8 +632,8 @@ module.exports = function (webpackEnv) {
         new MiniCssExtractPlugin({
           // Options similar to the same options in webpackOptions.output
           // both options are optional
-          filename: 'static/[name].css',
-          chunkFilename: 'static/[name].css',
+          filename: 'static/css/[id].[name].css',
+          chunkFilename: 'static/css/[id].[name].css',
         }),
       // Generate an asset manifest file with the following content:
       // - "files" key: Mapping of all asset filenames to their corresponding
