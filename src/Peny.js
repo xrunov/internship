@@ -11,20 +11,21 @@ import ResultTable from "./components/ResultTable";
 import ServErrMessage from "./components/ServErrMessage";
 import KeyRate from "./components/keyRate";
 import DateErrMassage from "./components/DateErrMassage";
+import FormulaMessage from "./components/FormulaMessage";
 
 let PenyCalculator = () => {
   const [Data, setData] = useState({
-    arrears: 0,
+    buttonText: "Рассчитать",
     dateSince: "",
     dateUntil: "",
+    errorMassage: "",
+    errorDate: "",
     rate: 1,
+    arrears: 0,
     dayCount: 0,
     penalty: 0,
     errorCode: 200,
-    errorMassage: "",
-    errorDate: "",
     loading: false,
-    buttonText: "Рассчитать",
     tExists: false,
     checked: true,
   });
@@ -81,7 +82,7 @@ let PenyCalculator = () => {
     Data.dayCount = penaltyDuration();
   }
   let count = () => {
-    Data.penalty = Data.arrears * Data.dayCount * Data.rate * PenyConfig.refinanceRate;
+    Data.penalty = Data.arrears * Data.dayCount * Data.rate / 100 * PenyConfig.refinanceRate;
   }
   let countEnd = () => {
     Data.loading = false;
@@ -199,6 +200,15 @@ let PenyCalculator = () => {
             tExists={Data.tExists}
           />
         </div>
+        <FormulaMessage
+          tExists={Data.tExists}
+          eCode={Data.errorCode}
+          cost={Data.arrears}
+          days={Data.dayCount}
+          rate={Data.rate}
+          peny={Data.penalty}
+          refinance={PenyConfig.refinanceRateT}
+        />
       </div>
     </div>
   );

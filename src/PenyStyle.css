@@ -44,6 +44,12 @@ html {
   display: flex;
 }
 
+.inputFormula {
+  cursor: default;
+  width: 100%;
+  display: flex;
+}
+
 .inputRate {
   cursor: text;
   border: lightgray;
