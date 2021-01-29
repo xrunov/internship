@@ -1,4 +1,4 @@
-import '../App.css';
+import '../PenyStyle.sass';
 import React, {Component} from "react";
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -26,7 +26,7 @@ export default class KeyRate extends Component {
           </div>
           <input
             className="form-control"
-            placeholder={"1.00"}
+            placeholder={"1.00 %"}
             type="number"
             step="0.01"
             min="0.00"

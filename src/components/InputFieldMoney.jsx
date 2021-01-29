@@ -1,4 +1,4 @@
-import '../App.css';
+import '../PenyStyle.sass';
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'
 

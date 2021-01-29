@@ -1,4 +1,4 @@
-import './App.css';
+import './PenyStyle.sass';
 import 'react-bootstrap';
 
 import React, {useState} from "react";
@@ -8,8 +8,9 @@ import PenyConfig from "./configurations/PenyConfig";
 import InputFieldDate from "./components/InputFieldDate";
 import InputFieldMoney from "./components/InputFieldMoney";
 import ResultTable from "./components/ResultTable";
-import ErrorMessage from "./components/ErrorMessage";
+import ServErrMessage from "./components/ServErrMessage";
 import KeyRate from "./components/keyRate";
+import DateErrMassage from "./components/DateErrMassage";
 
 let PenyCalculator = () => {
   const [Data, setData] = useState({
@@ -19,15 +20,16 @@ let PenyCalculator = () => {
     rate: 1,
     dayCount: 0,
     penalty: 0,
-    errorCode: 0,
+    errorCode: 200,
     errorMassage: "",
+    errorDate: "",
     loading: false,
     buttonText: "Рассчитать",
     tExists: false,
     checked: true,
   });
   Object.preventExtensions(Data);
-//функции отвечающие за обновление полей данных
+  //функции отвечающие за обновление полей данных
   let handleArrearsChange = (arrears) => {
     Data.arrears = arrears;
   };
@@ -40,7 +42,7 @@ let PenyCalculator = () => {
   let handleRateChange = (Rate) => {
     Data.rate = Rate;
   };
-//рассчет длительности периода просрочки
+  //рассчет длительности периода просрочки
   let penaltyDuration = () => {
     let diff = moment(Data.dateUntil, "YYYY-MM-DD").diff(moment(Data.dateSince, "YYYY-MM-DD"));
     let duration = moment.duration(diff);
@@ -51,52 +53,70 @@ let PenyCalculator = () => {
     Data.checked = !Data.checked;
     setData({...Data});
   }
-  //вычисление пени без рапроса
-  let countSimple = () => {
+  //обработчик ошибок
+  let catchError = (sCode, sMassage) => {
+    setData({...Data});
+    if (sCode !== 200) {
+      Data.errorCode = sCode;
+      if (sMassage) {
+        Data.errorMassage = sMassage;
+      }
+    }
+    if (Data.dayCount < 0) {
+      Data.errorDate = 1;
+    }
+    else  if( Data.dayCount === 0) {
+      Data.errorDate = 2;
+    }
+    else {
+      Data.errorDate = false;
+    }
+  }
+  //функции блокировки и разблокировки кнопок
+  let countStart = () => {
+    Data.errorCode = 200;
     Data.loading = true;
     Data.buttonText = "Рассчитывается..."
     setData({...Data});
     Data.dayCount = penaltyDuration();
+  }
+  let count = () => {
     Data.penalty = Data.arrears * Data.dayCount * Data.rate * PenyConfig.refinanceRate;
+  }
+  let countEnd = () => {
     Data.loading = false;
     Data.buttonText = "Рассчитать"
-    Data.tExists = true;
     setData({...Data});
   }
-//вычисление пени с запросом
+  //вычисление пени без запроса
+  let countSimple = () => {
+    countStart();
+    count();
+    catchError (200, "");
+    Data.tExists = true;
+    countEnd();
+  }
+  //вычисление пени с запросом
   let countFetch = async () => {
-    Data.loading = true;
-    Data.buttonText = "Рассчитывается..."
-    setData({...Data});
-    Data.dayCount = penaltyDuration();
+    countStart();
     //запрос на страницу
-
     try {
       const res = await fetch(PenyConfig.reqLink + Data.dateUntil)
       if (res.ok) {
         const data = await res.json();
         Data.rate = data.value;
-        //расчет пени
-        Data.penalty = Data.arrears * Data.dayCount * Data.rate * PenyConfig.refinanceRate;
-        //обработчик ошибок
-        if (data.statusCode !== 200) {
-          Data.errorCode = data.statusCode;
-          if (data.message) {
-            Data.errorMassage = data.message;
-          }
-        }
-        Data.loading = false;
-        Data.buttonText = "Рассчитать"
+        count();
+        //обработка ошибок
+        catchError (data.statusCode, data.message);
         Data.tExists = true;
-        setData({...Data});
+        countEnd();
       }
     } catch (err) {
       alert(err);
-      Data.loading = false;
-      Data.buttonText = "Рассчитать"
-      setData({...Data});
+      countEnd();
     }
   }
+  //выбор метода расчета
   let countPeny = (e) => {
     e.preventDefault()
     if (Data.checked) {
@@ -106,7 +126,7 @@ let PenyCalculator = () => {
       countSimple ()
     }
   }
-// разметка компонента калькулятора
+  // разметка компонента калькулятора
   return (
     <div className="background">
       <div className="CalcContainer">
@@ -131,6 +151,11 @@ let PenyCalculator = () => {
             <div className="divider"> </div>
             <InputFieldDate
               onDateReset={handleDateUntilChange}
+            />
+          </div>
+          <div className="r">
+            <DateErrMassage
+              eDate={Data.errorDate}
             />
           </div>
           <div className="r">
@@ -159,13 +184,14 @@ let PenyCalculator = () => {
           </div>
         </form>
         <div className="r">
-          <ErrorMessage
+          <ServErrMessage
             eCode={Data.errorCode}
             eMessage={Data.errorMassage}
           />
         </div>
         <div className="r">
           <ResultTable
+            eCode={Data.errorCode}
             cost={Data.arrears}
             days={Data.dayCount}
             rate={Data.rate}

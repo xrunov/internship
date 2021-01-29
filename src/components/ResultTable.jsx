@@ -1,10 +1,10 @@
-import '../App.css';
+import '../PenyStyle.sass';
 import React, {Component} from 'react';
 
 export default class ResultTable extends Component{
 
   render() {
-    if (this.props.tExists) {return (
+    if (this.props.tExists && this.props.eCode === 200) {return (
       <table className="tableResult" border="1px" cellSpacing="0">
         <tbody>
         <tr align="center">

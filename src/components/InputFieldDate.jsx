@@ -1,4 +1,4 @@
-import '../App.css';
+import '../PenyStyle.sass';
 import React, {Component} from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css'
 
@@ -23,7 +23,7 @@ export default class InputFieldDate extends Component {
           <input
             type="date"
             className="form-control"
-            required=""
+            required="required"
             value={Date}
             onChange={this.handleDateChange}
           />
